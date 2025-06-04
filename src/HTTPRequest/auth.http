@@ -22,4 +22,4 @@ Content-Type: application/json
 ### 🔑 Get User iniciando con el token
 GET localhost:8091/user/get
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiYWRtaW4iLCJzdWIiOiJlZHdpbkBnbWFpbC5jb20iLCJpYXQiOjE3NDkwNzA1NzYsImV4cCI6MTc0OTEwNjU3Nn0.iMhNy3P7BHSAhc_w1wRimd00he4hcOsqM-brAkH0wo4
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiYWRtaW4iLCJzdWIiOiJlZHdpbkBnbWFpbC5jb20iLCJpYXQiOjE3NDkwNzQyMDgsImV4cCI6MTc0OTExMDIwOH0.vUmJAKrQE8u7jbZfSAbYtqPg0BJ7NvNlwpf1K9oXX2Q

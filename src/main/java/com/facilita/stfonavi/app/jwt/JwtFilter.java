@@ -1,6 +1,8 @@
 package com.facilita.stfonavi.app.jwt;
 
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.MalformedJwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -30,27 +32,48 @@ public class JwtFilter extends OncePerRequestFilter {
     private String userName = null;
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+    protected void doFilterInternal(HttpServletRequest request,
+                                    HttpServletResponse response,
+                                    FilterChain filterChain) throws ServletException, IOException {
 
-        if (request.getServletPath().matches("/user/login|/user/forgotPssword|/user/signup")) {
+        String servletPath = request.getServletPath();
+
+        if (servletPath.matches("/user/login|/user/forgotPssword|/user/signup")) {
             filterChain.doFilter(request, response);
-        } else {
+            return;
+        }
+        // 2) Si es ruta de Facilita, también la saltamos:
+        if (servletPath.startsWith("/api/facilita/")) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+
             String authHeader = request.getHeader("Authorization");
             String token = null;
 
             if (authHeader != null && authHeader.startsWith("Bearer ")) {
-                token = authHeader.substring(7);
-                userName = jwtUtil.extractUsername(token);
-                claims = jwtUtil.extractAllClaims(token);
-
-                log.info("Rol dectetado en token JWT: {}", claims.get("role"));
+                token = authHeader.substring(7).trim();
+                try {
+                    userName = jwtUtil.extractUsername(token);
+                    claims = jwtUtil.extractAllClaims(token);
+                } catch (ExpiredJwtException | MalformedJwtException ex) {
+                    log.debug("JWT inválido o expirado: {}", ex.getMessage());
+                }
+                if (claims != null) {
+                    log.info("Rol detectado en token JWT: {}", claims.get("role"));
+                }
             }
 
-            if (userName != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+            if (userName != null &&
+                    SecurityContextHolder.getContext().getAuthentication() == null) {
+
                 UserDetails userDetails = service.loadUserByUsername(userName);
                 if (jwtUtil.validateToken(token, userDetails)) {
                     UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken =
-                            new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+                            new UsernamePasswordAuthenticationToken(
+                                    userDetails,
+                                    null,
+                                    userDetails.getAuthorities());
                     usernamePasswordAuthenticationToken.setDetails(
                             new WebAuthenticationDetailsSource().buildDetails(request)
                     );
@@ -60,7 +83,6 @@ public class JwtFilter extends OncePerRequestFilter {
             }
             filterChain.doFilter(request, response);
 
-        }
 
     }
 

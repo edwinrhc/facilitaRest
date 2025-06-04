@@ -47,7 +47,8 @@ public class SecurityConfig {
                                 "/user/forgotPassword",
                                 "/user/reset-password",
                                 "/swagger-ui/**",
-                                "/v3/api-docs/**"
+                                "/v3/api-docs/**",
+                                "/api/facilita/**"
                         ).permitAll()
                         .anyRequest()
                         .authenticated()

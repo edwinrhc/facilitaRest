@@ -23,8 +23,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
@@ -115,18 +117,22 @@ public class UserServiceImpl implements UserService {
     @Override
     public ResponseEntity<List<UserListDTO>> listUsers() {
         try{
+            String usuarioActual = jwtFilter.getCurrentUser();
+            if (usuarioActual == null) {
+                // No llegó un JWT válido o no se pudo extraer el usuario
+                return new ResponseEntity<>(Collections.emptyList(), HttpStatus.UNAUTHORIZED);
+            }
             if (jwtFilter.isAdmin()) {
                 return new ResponseEntity<>(userRepository.listUsers(), HttpStatus.OK);
             } else {
-                return new ResponseEntity<>(new ArrayList<>(), HttpStatus.UNAUTHORIZED);
+                return new ResponseEntity<>(new ArrayList<>(), HttpStatus.FORBIDDEN);
             }
 
         } catch (Exception ex) {
             ex.printStackTrace();
+            return new ResponseEntity<>(Collections.emptyList(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        return new ResponseEntity<>(new ArrayList<>(), HttpStatus.INTERNAL_SERVER_ERROR);
     }
-
     @Override
     public ResponseEntity<String> updateUser(Map<String, String> requestMap) {
         try {
