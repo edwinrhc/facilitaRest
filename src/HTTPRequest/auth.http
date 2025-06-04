@@ -1,0 +1,25 @@
+### 🔐 Crear Usuario
+POST localhost:8091/user/signup
+Content-Type: application/json
+
+{
+  "name": "ricardo",
+  "contactNumber": "949493742",
+  "email": "ricardo@gmail.com",
+  "password": "123456"
+}
+
+
+
+### 🔑 Iniciar Sesión
+POST localhost:8091/user/login
+Content-Type: application/json
+
+{"email": "edwin@gmail.com", "password":"123456"}
+
+
+
+### 🔑 Get User iniciando con el token
+GET localhost:8091/user/get
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiYWRtaW4iLCJzdWIiOiJlZHdpbkBnbWFpbC5jb20iLCJpYXQiOjE3NDkwNzA1NzYsImV4cCI6MTc0OTEwNjU3Nn0.iMhNy3P7BHSAhc_w1wRimd00he4hcOsqM-brAkH0wo4
