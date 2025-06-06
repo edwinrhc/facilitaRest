@@ -23,3 +23,10 @@ Content-Type: application/json
 GET localhost:8091/user/get
 Content-Type: application/json
 Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiYWRtaW4iLCJzdWIiOiJlZHdpbkBnbWFpbC5jb20iLCJpYXQiOjE3NDkwNzQyMDgsImV4cCI6MTc0OTExMDIwOH0.vUmJAKrQE8u7jbZfSAbYtqPg0BJ7NvNlwpf1K9oXX2Q
+
+####
+POST http://localhost:8091/api/facilita/nombre
+Content-Type: application/json
+Authorization: Bearer MiSecretoFacilita123
+
+{"nombre": "edwin"}
